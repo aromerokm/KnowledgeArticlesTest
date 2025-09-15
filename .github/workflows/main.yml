@@ -1,0 +1,27 @@
+name: Upload to Salesforce Unified Knowledge
+
+on:
+  pull_request:
+    branches: [main, master]  # (línea 4 de la tabla)
+    types: [closed]           # dispara al cerrar el PR
+  workflow_dispatch:          # también permite ejecutarlo manualmente
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true  # corre solo si el PR fue MERGE
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Github Uploader for Salesforce Unified Knowledge   # (líneas 17–18)
+        uses: zoomin-software/s3-publish@v0.2.1                 # versión del Marketplace
+        with:                                                   # (líneas 20–24)
+          aws-key-id: ${{ secrets.AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-bucket: ${{ secrets.AWS_BUCKET }}
+          aws-folder: ${{ secrets.AWS_FOLDER }}
